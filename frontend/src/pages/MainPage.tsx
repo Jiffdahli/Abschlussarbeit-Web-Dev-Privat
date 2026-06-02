@@ -1,26 +1,17 @@
-import CatalogSection from "../components/main/CatalogSection";
-import CommentSection from "../components/main/CommentSection";
-import ProfileSection from "../components/main/ProfileSection";
-import VisitorSection from "../components/main/VisitorSection";
+import { useTranslation } from 'react-i18next';
+import FavoritesSection from "../components/main/FavoritesSection";
 import WeatherSection from "../components/main/WeatherSection";
-
+import "../styles/main.css"
 function MainPage() {
+    const { t } = useTranslation();
+
     return (
         <main className="main-page">
-            <h1 className="main-title">
-                Maldives Marine Life
-            </h1>
-
-            <CatalogSection />
+            <h1 className="main-title">{t('main.title')}</h1>
 
             <WeatherSection />
-
-            <VisitorSection />
-
-            <CommentSection />
-
-            <ProfileSection />
-
+            
+            <FavoritesSection />
         </main>
     );
 }
