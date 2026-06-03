@@ -1,9 +1,9 @@
-import express, { Request, Response} from 'express';
+import express, { Request, Response } from "express";
 
 const router = express.Router();
 
-// GET /api/v1/weather
-router.get('/', async (req: Request, res: Response) => {
+router.get("/", async (_req: Request, res: Response) => {
+  try {
     const latitude = 4.1755;
     const longitude = 73.5093;
 
@@ -15,23 +15,25 @@ router.get('/', async (req: Request, res: Response) => {
       `&daily=temperature_2m_max,temperature_2m_min,precipitation_sum,weather_code` +
       `&timezone=Indian%2FMaldives`;
 
-      const response = await fetch(weatherUrl);
+    const response = await fetch(weatherUrl);
 
-      if (!response.ok) {
-        res.status(500).json({
-             error: 'Weather service is currently unavailable' 
-            });
-        return;
-      }
+    if (!response.ok) {
+      res.status(500).json({ error: "Weather service is currently unavailable" });
+      return;
+    }
 
-      const data = await response.json();
+    const data = await response.json();
 
-  res.json({
-    location: 'Maldives',
-    current: data.current,
-    daily: data.daily,
-    dailyUnits: data.daily_units,
-  });
+    res.json({
+      location: "Maldives",
+      current: data.current,
+      daily: data.daily,
+      dailyUnits: data.daily_units,
+    });
+  } catch (error) {
+    console.error("Weather route error:", error);
+    res.status(500).json({ error: "Weather data could not be loaded" });
+  }
 });
 
 export default router;

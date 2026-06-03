@@ -12,35 +12,50 @@ export default function InlineSVG({ src, className, ariaLabel }: Props) {
   useEffect(() => {
     let cancelled = false;
 
-    async function load() {
+    async function loadSvg() {
       try {
-        const res = await fetch(src);
-        if (!res.ok) throw new Error("Failed to load SVG");
-        const text = await res.text();
-        if (!cancelled) setSvg(text);
-      } catch (e) {
-        console.error("InlineSVG load error:", e);
-        if (!cancelled) setSvg(null);
+        const response = await fetch(src);
+
+        if (!response.ok) {
+          throw new Error(`SVG could not be loaded: ${src}`);
+        }
+
+        const svgText = await response.text();
+
+        if (!cancelled) {
+          setSvg(svgText);
+        }
+      } catch (error) {
+        console.error("InlineSVG load error:", error);
+
+        if (!cancelled) {
+          setSvg(null);
+        }
       }
     }
 
-    load();
+    loadSvg();
 
     return () => {
       cancelled = true;
     };
   }, [src]);
 
-  if (svg === null) {
-    // fallback empty element while loading or on error
-    return <div className={className} aria-label={ariaLabel} />;
+  if (!svg) {
+    return (
+      <span
+        className={className}
+        aria-label={ariaLabel}
+        role="img"
+      />
+    );
   }
 
   return (
-    <div
+    <span
       className={className}
       aria-label={ariaLabel}
-      // SVG comes from our public folder; this is a controlled case
+      role="img"
       dangerouslySetInnerHTML={{ __html: svg }}
     />
   );
